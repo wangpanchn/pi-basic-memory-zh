@@ -1,7 +1,7 @@
 {
   "name": "pi-basic-memory-zh",
-  "version": "0.24.1-zh.1",
-  "description": "Basic Memory 的 Pi 扩展包（中文适配）：recall/capture 连续性 + CLI/MCP 双通路 + 中文知识库规范",
+  "version": "0.24.1-zh.2",
+  "description": "Basic Memory 的 Pi 扩展包（中文适配）：默认走 MCP 的 recall/capture 连续性 + 中文知识库规范",
   "license": "AGPL-3.0-or-later",
   "author": "wangpanchn (fork), Basic Machines (upstream)",
   "repository": {

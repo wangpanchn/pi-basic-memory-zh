@@ -4,6 +4,8 @@
 
 装完之后，Pi 有了跨会话的长期记忆：开会话能接上上次的线索，工作到关键处把现场存成笔记，检索走本地知识图谱而不是靠模型想起来。
 
+**默认走 MCP**：模型能直接调 27 个知识库工具，会话内检索约 0.14 秒（CLI 模式每条命令约 10 秒）。
+
 这个仓库是上游 `@basicmemory/pi-basic-memory` 的衍生版：**扩展代码保持上游原样**（便于跟随上游更新），改动集中在**中文技能包**和**实战中踩出来的配置**。
 
 ---
@@ -15,6 +17,7 @@
 | Pi | ≥ 0.85.1 | 扩展/技能加载依赖 |
 | Node.js | ≥ 22.19 | Pi 的要求 |
 | Basic Memory CLI | ≥ 0.24 | 必须能在 Pi 的 PATH 里调到 `bm` |
+| `pi-mcp-adapter` | 最新 | **默认 MCP 模式必需**：`pi install npm:pi-mcp-adapter` |
 
 装 CLI（推荐 uv，别用 `pip` 装到系统环境）：
 
@@ -31,7 +34,10 @@ bm --version    # 应输出 0.24.x 或更高
 ## 安装
 
 ```bash
-# 从 GitHub（推荐，可跟版本标签）
+# 1) 默认 MCP 模式需要适配器
+pi install npm:pi-mcp-adapter
+
+# 2) 从 GitHub（推荐，可跟版本标签）
 pi install git:github.com/wangpanchn/pi-basic-memory-zh
 
 # 或本地开发时直接从路径加载
@@ -70,7 +76,7 @@ bm project add main ~/my-memory
 ```json
 // <workspace>/.pi/basic-memory.json
 {
-  "transport": "cli",
+  "transport": "mcp",
   "project": "main",
   "captureFolder": "pi/sessions",
   "useHookFlow": true,
@@ -103,24 +109,20 @@ Environment=BASIC_MEMORY_PI_TRUST_WORKSPACE=1
 
 ## 两条通路，别搞混
 
-| | CLI（默认） | MCP |
+| | **MCP（默认）** | CLI（备选） |
 |:--|:--|:--|
-| 需要什么 | 只要 `bm` 在 PATH | 额外 `pi install npm:pi-mcp-adapter` |
+| 需要什么 | `bm` + `pi install npm:pi-mcp-adapter` | 只要 `bm` 在 PATH |
 | 模型能调用 | `bm_recall` / `bm_capture` | 上面两个 + 27 个 MCP 工具（`search_notes` / `build_context` / `write_note` …） |
-| 单次检索耗时 | **约 10 秒**（每次进程启动都要导入整个 MCP 工具面） | 会话内首次约 2 秒，之后 **约 0.14 秒** |
+| 单次检索耗时 | 会话内首次约 2 秒，之后 **约 0.14 秒** | **约 10 秒**（每次进程启动都要导入整个 MCP 工具面） |
 
-**想高频检索就上 MCP。** 从 CLI 换过来：
-
-```bash
-pi install npm:pi-mcp-adapter
-# .pi/basic-memory.json 里把 "transport": "cli" 改成 "mcp"
-```
-
-MCP 模式下每个 Pi 会话会拉起一个 stdio MCP 服务，模型只加载一次。如果想跨会话共用、连启动都省掉，可以自己常驻一个：
+MCP 模式下每个 Pi 会话会拉起一个 stdio MCP 服务，模型只加载一次。想跨会话共用、连启动都省掉，可以自己常驻一个：
 
 ```bash
 bm mcp --transport streamable-http --host 127.0.0.1 --port 8765 --project main
 ```
+
+**不想用 MCP**（比如机器上装不了适配器）：在 `.pi/basic-memory.json` 显式写 `"transport": "cli"`，
+功能保留但每次检索约 10 秒。
 
 ---
 
@@ -164,7 +166,7 @@ skills/
 └── memory-onboarding/       # 中文：从零设计知识体系（schema/指令笔记/启动路由），已按 bm CLI 改写工具调用
 ```
 
-`memory-onboarding` 原本是给 MCP 工具面写的，这里改写成 `bm tool …` / `bm schema …` 等 CLI 等价命令，所以在 `transport: cli` 下也能跑通全流程。
+`memory-onboarding` 原本只写了 MCP 工具名。这里补了一张 `bm` CLI 等价映射表：默认 MCP 模式下直接用 MCP 工具，拿不到时（或 `transport: cli` 备选模式）按映射表走 CLI，全流程都能跑通。
 
 ---
 
@@ -174,6 +176,7 @@ skills/
 
 | 项 | 上游 | 本仓库 |
 |:--|:--|:--|
+| 默认 transport | `cli` | **`mcp`**（快 70 倍；需 `pi-mcp-adapter`） |
 | 技能语言 | 英文 | 中文 |
 | `memory-onboarding` | 不包含（在 Python 包的 wheel 里，且用 MCP 工具名） | 包含，已改写为 `bm` CLI 调用 |
 | 文档 | 英文，只讲怎么装 | 中文，补充实测数据：CLI/MCP 延迟、中文嵌入模型配置、autoRecall 边界、会话归档掺入的代价 |

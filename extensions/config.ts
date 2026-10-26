@@ -21,7 +21,8 @@ export interface BasicMemoryPiConfig {
 }
 
 const DEFAULT_CONFIG: BasicMemoryPiConfig = {
-  transport: "cli",
+  // zh fork: 默认走 MCP —— CLI 每次调用有约 10s 的导入开销，MCP 会话内约 0.14s
+  transport: "mcp",
   bmPath: "bm",
   captureFolder: "pi/sessions",
   recallTimeframe: "7d",

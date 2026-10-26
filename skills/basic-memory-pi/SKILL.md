@@ -11,10 +11,10 @@ description: 用 Basic Memory 在 Pi 里做持久连续性。用 bm_recall / bm_
 
 | 面 | 工具 | 走什么 |
 |:--|:--|:--|
-| **Pi 原生连续性** | `bm_recall` / `bm_capture`（模型可直接调）+ 斜杠命令 `/bm-recall` `/bm-capture` `/bm-status` | CLI（`bm`） |
-| **完整知识库能力** | 27 个 MCP 工具（`search_notes` / `read_note` / `build_context` / `write_note` …） | `transport: mcp` + `pi-mcp-adapter` |
+| **Pi 原生连续性** | `bm_recall` / `bm_capture`（模型可直接调）+ 斜杠命令 `/bm-recall` `/bm-capture` `/bm-status` | 一直可用 |
+| **完整知识库能力** | 27 个 MCP 工具（`search_notes` / `read_note` / `build_context` / `write_note` …） | **默认开启**：`transport: mcp` + `pi-mcp-adapter` |
 
-- `transport: cli`（默认）只有上表第一行。
+- `transport: cli`（仅作备选）只有上表第一行，且每次调用约 10 秒。
 - `transport: mcp` 两行都有；MCP 工具挂在 `mcp` 网关后面，调用方式见 `pi-mcp-adapter`。
 - **别假设 MCP 工具名一定可见**：先看当前会话工具列表，没有就走 CLI（`bm tool search-notes` 等）。
 

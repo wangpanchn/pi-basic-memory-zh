@@ -23,6 +23,10 @@
 4. **README 补充实测数据**：CLI 与 MCP 通路的延迟差异、中文嵌入模型与维度的配置要求、
    `autoRecall` 只检索检查点的边界、把会话归档并入主知识库的检索代价。
 5. **`package.json`** 改为本仓库的 name/version/repository，并声明三个技能。
+6. **默认 transport 从 `cli` 改为 `mcp`**（`extensions/config.ts` 的 `DEFAULT_CONFIG`）。原因：CLI 每条命令都要
+   导入整个 MCP 工具面，实测约 10 秒；MCP 模式会话内检索约 0.14 秒。代价是必须先装
+   `pi-mcp-adapter`，未装时 `transport: mcp` 会提示缺少依赖（不会崩溃）。要回退 CLI 行为，
+   在 `.pi/basic-memory.json` 显式写 `"transport": "cli"`。
 
 除上述改动外，功能行为与上游一致。
 

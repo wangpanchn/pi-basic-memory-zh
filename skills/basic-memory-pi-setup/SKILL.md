@@ -15,7 +15,7 @@ description: 为一个 Pi 工作区配置 Basic Memory 连续性：写 .pi/basic
 
 ```json
 {
-  "transport": "cli",
+  "transport": "mcp",
   "project": "<项目名>",
   "captureFolder": "pi/sessions",
   "useHookFlow": true,
@@ -41,7 +41,17 @@ description: 为一个 Pi 工作区配置 Basic Memory 连续性：写 .pi/basic
 
    信任是**工作区级**的开关：不开，`/bm-recall` 仍可手动用，但自动召回/捕获会显示 `blocked`。
 
-5. 想用 MCP 模式（27 个工具、检索更快）：`pi install npm:pi-mcp-adapter`，然后把 `transport` 改成 `mcp`。MCP 模式同样要求显式项目 + 工作区信任。
+5. **MCP 是本包默认**（27 个工具、会话内检索约 0.14s）。它依赖适配器，必须装：
+
+   ```bash
+   pi install npm:pi-mcp-adapter
+   ```
+
+   没装适配器时扩展不会崩，只是 `/bm-status` 会提示缺少依赖、模型侧拿不到 27 个工具。
+   MCP 模式同样要求显式项目 + 工作区信任。
+
+   只有在你明确不想要 MCP 时才显式写 `"transport": "cli"` —— 代价是每次 `bm` 调用约 10 秒
+   （每条命令都要导入整个 MCP 工具面）。
 
 6. 验证：`/bm-status` 应显示项目已配置、自动化已开启；再跑 `/bm-recall <主题>` 或 `/bm-capture 验证检查点`，确认笔记真的落地（`bm tail` 能看到）。
 
@@ -49,7 +59,7 @@ description: 为一个 Pi 工作区配置 Basic Memory 连续性：写 .pi/basic
 
 | 键 | 默认 | 作用 |
 |:--|:--|:--|
-| `transport` | `cli` | `cli` 走 `bm` 命令；`mcp` 走 `pi-mcp-adapter` |
+| `transport` | `mcp` | `mcp` 走 `pi-mcp-adapter`（默认，快）；`cli` 走 `bm` 命令（每条约 10s，仅备选） |
 | `project` / `projectId` | 未设 | 用哪个项目；两个都设时 `projectId` 优先 |
 | `captureFolder` | `pi/sessions` | 检查点写到哪里 |
 | `recallTimeframe` | `7d` | 自动召回的搜索时间窗 |

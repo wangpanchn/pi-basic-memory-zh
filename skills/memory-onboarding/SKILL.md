@@ -11,6 +11,12 @@ This skill works with any LLM or assistant platform. Where platform-specific set
 
 ## Pi runtime — how to actually call Basic Memory here
 
+**默认是 MCP 模式**（`transport: mcp` + `pi-mcp-adapter`）：模型能直接调 27 个知识库工具
+（`write_note` / `search_notes` / `list_directory` / `schema_infer` …），**优先用这些**。
+
+只有在下列情况才走下面那张 CLI 映射表：`.pi/basic-memory.json` 显式写了 `transport: cli`，
+或本会话工具列表里确实看不到 MCP 工具。判断方式很简单——看工具列表里有没有 `mcp` 网关或 MCP 工具名。
+
 This copy runs on Pi with `transport: cli`. There is **no MCP tool surface**: the model-facing tools are only `bm_recall` and `bm_capture`, and everything else goes through the `bm` CLI in bash. Ignore canonical MCP tool names — `write_note`, `search_notes`, `list_directory`, `schema_infer` and friends do not exist in this runtime. Use this mapping:
 
 | Canonical MCP tool | Pi CLI equivalent |

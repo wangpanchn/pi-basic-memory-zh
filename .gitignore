@@ -1,0 +1,14 @@
+# 依赖与构建产物
+node_modules/
+package-lock.json
+
+# 本地/编辑器
+.DS_Store
+*.swp
+*~
+.idea/
+.vscode/
+
+# 临时
+*.tmp
+*.log

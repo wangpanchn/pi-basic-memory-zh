@@ -1,0 +1,45 @@
+{
+  "name": "pi-basic-memory-zh",
+  "version": "0.24.1-zh.1",
+  "description": "Basic Memory 的 Pi 扩展包（中文适配）：recall/capture 连续性 + CLI/MCP 双通路 + 中文知识库规范",
+  "license": "AGPL-3.0-or-later",
+  "author": "wangpanchn (fork), Basic Machines (upstream)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wangpanchn/pi-basic-memory-zh.git"
+  },
+  "homepage": "https://github.com/wangpanchn/pi-basic-memory-zh",
+  "bugs": {
+    "url": "https://github.com/wangpanchn/pi-basic-memory-zh/issues"
+  },
+  "keywords": [
+    "pi-package",
+    "pi",
+    "basic-memory",
+    "memory",
+    "mcp",
+    "zh",
+    "chinese"
+  ],
+  "files": [
+    "extensions",
+    "skills",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md"
+  ],
+  "pi": {
+    "extensions": [
+      "./extensions/index.ts"
+    ],
+    "skills": [
+      "./skills/basic-memory-pi",
+      "./skills/basic-memory-pi-setup",
+      "./skills/memory-onboarding"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "typebox": "*"
+  }
+}
